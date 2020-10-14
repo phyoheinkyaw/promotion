@@ -274,7 +274,7 @@ app.post('/webview',upload.single('file'),function(req,res){
               image: img_url
               }).then(success => {
                 console.log("DATA SAVED")
-                thankyouReply(sender, name, img_url);
+                submitPromoReply(sender, shopname, img_url);
               }).catch(error => {
                 console.log(error);
               });
@@ -645,6 +645,34 @@ const thankyouReply =(sender_psid, name, img_url) => {
                 {
                   "type": "postback",
                   "title": "No!",
+                  "payload": "no",
+                }
+              ],
+          }]
+        }
+      }
+    }
+  callSend(sender_psid, response);
+}
+
+const submitPromoReply =(sender_psid, shopname, img_url) => {
+  let response = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": "Thank you! " + shopname,
+            "image_url":img_url,
+            "buttons": [
+                {
+                  "type": "postback",
+                  "title": "Submit Another Promotion",
+                  "payload": "yes",
+                },
+                {
+                  "type": "postback",
+                  "title": "Search Promotions",
                   "payload": "no",
                 }
               ],
