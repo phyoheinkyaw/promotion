@@ -247,7 +247,7 @@ app.post('/webview',upload.single('file'),function(req,res){
 //Submit Promotion Test
 app.get('/webview/:sender_id',function(req,res){
     const sender_id = req.params.sender_id;
-    res.render('subpromo.ejs',{title:"Welcome! Fill your promotion information", sender_id:sender_id});
+    res.render('webview.ejs',{title:"Welcome! Fill your promotion information", sender_id:sender_id});
 });
 
 app.post('/webview',upload.single('file'),function(req,res){

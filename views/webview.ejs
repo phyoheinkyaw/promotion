@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <title>Submit Your Promotion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {box-sizing: border-box; font-family: Arial;}
+    input[type=text], select, textarea {width: 100%;padding: 12px;border: 1px solid #ccc;border-radius: 4px;resize: vertical;}
+    label {padding: 12px 12px 12px 0;display: inline-block;}
+    input[type=submit] {background-color: #4CAF50;color: white;padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer;float: right;}
+    input[type=submit]:hover {background-color: #45a049;}
+    .container {border-radius: 5px;background-color: #fff000;padding: 20px;}
+    .col-25 {float: left;width: 25%;margin-top: 6px;}
+    .col-75 {float: left;width: 75%;margin-top: 6px;}
+    .row:after {content: "";display: table;clear: both;}
+    @media screen and (max-width: 600px) {.col-25, .col-75, input[type=submit] {width: 100%;margin-top: 0;}}
+  </style>
  </head>
 
   <body>
@@ -16,65 +28,106 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
-    const APP_ID = 544769076153407;    
+    const APP_ID = 544769076153407;
     var senderID = "";
-    
+
     window.extAsyncInit = function() {
-        MessengerExtensions.getContext(APP_ID, 
+        MessengerExtensions.getContext(APP_ID,
           function success(thread_context){
            senderID = thread_context.psid;
           },
           function error(err){
             console.log(err);
           }
-        );        
+        );
     };
   </script>
-  
+
   <h1><%= title %></h1>
 
+  <div class="container">
   <form id="form" enctype="multipart/form-data" method="post" action="https://promotionchatbot.herokuapp.com/webview/">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">    
+  <div class="row"><div class="col-25">
+    <label for="category">Category</label></div>
+      <div class="col-75">
+        <select id="category" name="category">
+          <option value="mobilephone">Mobile Phone</option>
+          <option value="computer">Computer</option>
+          <option value="electronic">Electronic</option>
+          <option value="salon">Salon</option>
+          <option value="cosmetic">Cosmetic</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="minimart">Mini-Mart</option>
+        </select>
+      </div>
   </div>
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
-  </div> 
-  <div class="form-group">
-    <label for="email">Image</label>
-    <input type="file" name="file" />
+  <div class="row"><div class="col-25">
+    <label for="about">About Promotion / Discount</label></div>
+    <div class="col-75">
+      <textarea id="about" name="about" placeholder="Your Promotion Message Here" style="height:120px"></textarea>
+    </div>
   </div>
-  <input type="hidden"  id="sender" name="sender" value="<%= sender_id %>">
-  <input type="submit" value="Submit"> 
+  <div class="row"><div class="col-25">
+    <label for="sname">Shop Name</label></div>
+    <div class="col-75">
+      <input type="text" id="sname" name="shopname" placeholder="Your Shop Name">
+    </div>
+  </div>
+  <div class="row"><div class="col-25">
+    <label for="saddress">Shop Address</label></div>
+    <div class="col-75">
+      <input type="text" id="saddress" name="shopaddress" placeholder="Your Shop Address">
+    </div>
+  </div>
+  <div class="row"><div class="col-25">
+    <label for="uploadImage">Upload Shop Image</label></div>
+    <div class="col-75">
+      <input id="uploadImage" type="file" name="file" onchange="PreviewImage();" /></div><div class="col-75">
+      <img id="uploadPreview" style="width: 200px; height: 200px;" />
+    </div>
+  </div>
+  <div class="row">
+    <input type="hidden"  id="sender" name="sender" value="<%= sender_id %>">
+    <input type="submit" value="Submit">
+  </div>
   </form>
+</div>
 
+  <script type="text/javascript">
 
-  
+      function PreviewImage() {
+          var oFReader = new FileReader();
+          oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+
+          oFReader.onload = function (oFREvent) {
+              document.getElementById("uploadPreview").src = oFREvent.target.result;
+          };
+      };
+
+  </script>
+
   <script>
-      
-   
+
+
       const windowShut = () => {
-   
+
           MessengerExtensions.requestCloseBrowser(function success() {
-          console.log("success");          
+          console.log("success");
         }, function error(err) {
           console.log(err);
         });
         }
-      
-      document.getElementById("form").addEventListener("submit", windowShut);       
+
+      document.getElementById("form").addEventListener("submit", windowShut);
 
       /*
       const postFormData = (data) => {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "https://fbstarterbot.herokuapp.com/webview/", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data)); 
+        xhr.send(JSON.stringify(data));
       } */
 
-     
 
   </script>
 
