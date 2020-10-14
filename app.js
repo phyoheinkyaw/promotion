@@ -5,17 +5,17 @@ const APP_URL = process.env.APP_URL;
 //new text
 
 // Imports dependencies and set up http server
-const 
+const
   { uuid } = require('uuidv4'),
   {format} = require('util'),
   request = require('request'),
   express = require('express'),
   body_parser = require('body-parser'),
   firebase = require("firebase-admin"),
-  ejs = require("ejs"),  
+  ejs = require("ejs"),
   fs = require('fs'),
-  multer  = require('multer'),  
-  app = express(); 
+  multer  = require('multer'),
+  app = express();
 
 const uuidv4 = uuid();
 
@@ -33,7 +33,7 @@ var storage = multer.diskStorage({
   }
 })*/
 
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
   limits :{
     fileSize: 50 * 1024 * 1024  //no larger than 5mb
@@ -52,9 +52,9 @@ var firebaseConfig = {
      credential: firebase.credential.cert({
     "private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     "client_email": process.env.FIREBASE_CLIENT_EMAIL,
-    "project_id": process.env.FIREBASE_PROJECT_ID,    
+    "project_id": process.env.FIREBASE_PROJECT_ID,
     }),
-    databaseURL: process.env.FIREBASE_DB_URL,   
+    databaseURL: process.env.FIREBASE_DB_URL,
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET
   };
 
@@ -62,37 +62,37 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-let db = firebase.firestore(); 
+let db = firebase.firestore();
 let bucket = firebase.storage().bucket();
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
 // Accepts POST requests at /webhook endpoint
-app.post('/webhook', (req, res) => {  
+app.post('/webhook', (req, res) => {
 
   // Parse the request body from the POST
   let body = req.body;
 
-  
+
 
   // Check the webhook event is from a Page subscription
   if (body.object === 'page') {
     body.entry.forEach(function(entry) {
 
       let webhook_event = entry.messaging[0];
-      let sender_psid = webhook_event.sender.id; 
+      let sender_psid = webhook_event.sender.id;
 
       if (webhook_event.message) {
         if(webhook_event.message.quick_reply){
             handleQuickReply(sender_psid, webhook_event.message.quick_reply.payload);
           }else{
-            handleMessage(sender_psid, webhook_event.message);                       
-          }                
-      } else if (webhook_event.postback) {        
+            handleMessage(sender_psid, webhook_event.message);
+          }
+      } else if (webhook_event.postback) {
         handlePostback(sender_psid, webhook_event.postback);
       }
-      
+
     });
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
@@ -108,16 +108,16 @@ app.post('/webhook', (req, res) => {
 app.use('/uploads', express.static('uploads'));
 
 
-app.get('/',function(req,res){    
+app.get('/',function(req,res){
     res.send('your app is up and running');
 });
 
-app.get('/test',function(req,res){    
+app.get('/test',function(req,res){
     res.render('test.ejs');
 });
 
 app.post('/test',function(req,res){
-    const sender_psid = req.body.sender_id;     
+    const sender_psid = req.body.sender_id;
     let response = {"text": "You  click delete button"};
     callSend(sender_psid, response);
 });
@@ -135,29 +135,29 @@ app.get('/showimages/:sender_id/',function(req,res){
         querySnapshot.forEach(function(doc) {
             let img = {};
             img.id = doc.id;
-            img.url = doc.data().url;         
+            img.url = doc.data().url;
 
-            data.push(img);                      
+            data.push(img);
 
         });
         console.log("DATA", data);
-        res.render('gallery.ejs',{data:data, sender_id:sender_id, 'page-title':'welcome to my page'}); 
+        res.render('gallery.ejs',{data:data, sender_id:sender_id, 'page-title':'welcome to my page'});
 
     }
-    
+
     )
     .catch(function(error) {
         console.log("Error getting documents: ", error);
-    });    
+    });
 });
 
 
 app.post('/imagepick',function(req,res){
-      
+
   const sender_id = req.body.sender_id;
   const doc_id = req.body.doc_id;
 
-  console.log('DOC ID:', doc_id); 
+  console.log('DOC ID:', doc_id);
 
   db.collection('images').doc(doc_id).get()
   .then(doc => {
@@ -175,7 +175,7 @@ app.post('/imagepick',function(req,res){
           "template_type": "generic",
           "elements": [{
             "title": "Is this the image you like?",
-            "image_url":image_url,                       
+            "image_url":image_url,
             "buttons": [
                 {
                   "type": "postback",
@@ -193,14 +193,14 @@ app.post('/imagepick',function(req,res){
       }
     }
 
-  
-    callSend(sender_id, response); 
+
+    callSend(sender_id, response);
     }
   })
   .catch(err => {
     console.log('Error getting document', err);
   });
-      
+
 });
 
 
@@ -210,17 +210,17 @@ END Gallery Page
 **********************************************/
 
 //webview test
-app.get('/webview/:sender_id',function(req,res){
+/*app.get('/webview/:sender_id',function(req,res){
     const sender_id = req.params.sender_id;
-    res.render('webview.ejs',{title:"Hello!! from WebView", sender_id:sender_id});
+    res.render('webview.ejs',{title:"Welcome! Fill your promotion information", sender_id:sender_id});
 });
 
 app.post('/webview',upload.single('file'),function(req,res){
-       
+
       let name  = req.body.name;
       let email = req.body.email;
       let img_url = "";
-      let sender = req.body.sender;  
+      let sender = req.body.sender;
 
       console.log("REQ FILE:",req.file);
 
@@ -233,12 +233,51 @@ app.post('/webview',upload.single('file'),function(req,res){
               name: name,
               email: email,
               image: img_url
-              }).then(success => {   
+              }).then(success => {
                 console.log("DATA SAVED")
-                thankyouReply(sender, name, img_url);    
+                thankyouReply(sender, name, img_url);
               }).catch(error => {
                 console.log(error);
-              }); 
+              });
+        }).catch((error) => {
+          console.error(error);
+        });
+      }*/
+
+//Submit Promotion Test
+app.get('/webview/:sender_id',function(req,res){
+    const sender_id = req.params.sender_id;
+    res.render('subpromo.ejs',{title:"Welcome! Fill your promotion information", sender_id:sender_id});
+});
+
+app.post('/webview',upload.single('file'),function(req,res){
+
+      let category  = req.body.category;
+      let about  = req.body.about;
+      let shopname  = req.body.shopname;
+      let shopaddress  = req.body.shopaddress;
+      let img_url = "";
+      let sender = req.body.sender;
+
+      console.log("REQ FILE:",req.file);
+
+
+
+      let file = req.file;
+      if (file) {
+        uploadImageToStorage(file).then((img_url) => {
+            db.collection('Promotions').add({
+              category: category,
+              about: about,
+              shopname: shopname,
+              shopaddress: shopaddress,
+              image: img_url
+              }).then(success => {
+                console.log("DATA SAVED")
+                thankyouReply(sender, name, img_url);
+              }).catch(error => {
+                console.log(error);
+              });
         }).catch((error) => {
           console.error(error);
         });
@@ -246,53 +285,51 @@ app.post('/webview',upload.single('file'),function(req,res){
 
 
 
-     
-      
-      
-           
+
+
 });
 
 //Set up Get Started Button. To run one time
 //eg https://fbstarter.herokuapp.com/setgsbutton
 app.get('/setgsbutton',function(req,res){
-    setupGetStartedButton(res);    
+    setupGetStartedButton(res);
 });
 
 //Set up Persistent Menu. To run one time
 //eg https://fbstarter.herokuapp.com/setpersistentmenu
 app.get('/setpersistentmenu',function(req,res){
-    setupPersistentMenu(res);    
+    setupPersistentMenu(res);
 });
 
 //Remove Get Started and Persistent Menu. To run one time
 //eg https://fbstarter.herokuapp.com/clear
-app.get('/clear',function(req,res){    
+app.get('/clear',function(req,res){
     removePersistentMenu(res);
 });
 
 //whitelist domains
 //eg https://fbstarter.herokuapp.com/whitelists
-app.get('/whitelists',function(req,res){    
+app.get('/whitelists',function(req,res){
     whitelistDomains(res);
 });
 
 
 // Accepts GET requests at the /webhook endpoint
 app.get('/webhook', (req, res) => {
-  
 
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;  
+
+  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
-  let challenge = req.query['hub.challenge'];  
-    
+  let challenge = req.query['hub.challenge'];
+
   // Check token and mode
   if (mode && token) {
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-      res.status(200).send(challenge);    
-    } else {      
-      res.sendStatus(403);      
+      res.status(200).send(challenge);
+    } else {
+      res.sendStatus(403);
     }
   }
 });
@@ -302,18 +339,18 @@ Function to Handle when user send quick reply message
 ***********************************************/
 
 function handleQuickReply(sender_psid, received_message) {
-  
-  switch(received_message) {        
+
+  switch(received_message) {
         case "on":
             showQuickReplyOn(sender_psid);
           break;
         case "off":
             showQuickReplyOff(sender_psid);
-          break;                
+          break;
         default:
             defaultReply(sender_psid);
-  } 
- 
+  }
+
 }
 
 /**********************************************
@@ -327,19 +364,22 @@ const handleMessage = (sender_psid, received_message) => {
   if(received_message.attachments){
      handleAttachments(sender_psid, received_message.attachments);
   } else {
-      
+
       let user_message = received_message.text;
 
       console.log('USER MESSAGE', user_message);
-     
-      user_message = user_message.toLowerCase(); 
 
-      switch(user_message) { 
+      user_message = user_message.toLowerCase();
+
+      switch(user_message) {
       case "hi":
           hiReply(sender_psid);
         break;
       case "hello":
           hiReply(sender_psid);
+        break;
+      case "promotion":
+          defaultReply(sender_psid);
         break;
       case "mingalarbar":
           greetInMyanmar(sender_psid);
@@ -351,20 +391,20 @@ const handleMessage = (sender_psid, received_message) => {
         quickReply(sender_psid);
         break;
       case "button":
-        console.log('CASE: BUTTON');            
+        console.log('CASE: BUTTON');
         buttonReply(sender_psid);
         break;
       case "webview":
         webviewTest(sender_psid);
-        break;       
+        break;
       case "show images":
         showImages(sender_psid)
-        break;               
+        break;
       default:
           defaultReply(sender_psid);
-      }       
-          
-      
+      }
+
+
     }
 
 }
@@ -373,7 +413,7 @@ const handleMessage = (sender_psid, received_message) => {
 Function to handle when user send attachment
 **********************************************/
 const handleAttachments = (sender_psid, attachments) => {
-  let response; 
+  let response;
   let attachment_url = attachments[0].payload.url;
     response = {
       "attachment": {
@@ -409,16 +449,16 @@ Function to handle when user click button
 **********************************************/
 const handlePostback = (sender_psid, received_postback) => {
   let payload = received_postback.payload;
-  switch(payload) {        
+  switch(payload) {
       case "yes":
           showButtonReplyYes(sender_psid);
         break;
       case "no":
           showButtonReplyNo(sender_psid);
-        break;                      
+        break;
       default:
           defaultReply(sender_psid);
-  } 
+  }
 }
 
 
@@ -444,16 +484,16 @@ const showImages = (sender_psid) => {
         "payload": {
           "template_type": "generic",
           "elements": [{
-            "title": "show images",                       
-            "buttons": [              
+            "title": "show images",
+            "buttons": [
               {
                 "type": "web_url",
                 "title": "enter",
                 "url":APP_URL+"showimages/"+sender_psid,
                  "webview_height_ratio": "full",
-                "messenger_extensions": true,          
+                "messenger_extensions": true,
               },
-              
+
             ],
           }]
         }
@@ -480,16 +520,16 @@ function webviewTest(sender_psid){
         "payload": {
           "template_type": "generic",
           "elements": [{
-            "title": "Click to open webview?",                       
-            "buttons": [              
+            "title": "Click to open webview?",
+            "buttons": [
               {
                 "type": "web_url",
                 "title": "webview",
                 "url":APP_URL+"webview/"+sender_psid,
                  "webview_height_ratio": "full",
-                "messenger_extensions": true,          
+                "messenger_extensions": true,
               },
-              
+
             ],
           }]
         }
@@ -525,11 +565,11 @@ const quickReply =(sender_psid) => {
             {
               "content_type":"text",
               "title":"On",
-              "payload":"on",              
+              "payload":"on",
             },{
               "content_type":"text",
               "title":"Off",
-              "payload":"off",             
+              "payload":"off",
             }
     ]
   };
@@ -555,7 +595,7 @@ const buttonReply =(sender_psid) => {
           "template_type": "generic",
           "elements": [{
             "title": "Are you OK?",
-            "image_url":"https://www.mindrops.com/images/nodejs-image.png",                       
+            "image_url":"https://www.mindrops.com/images/nodejs-image.png",
             "buttons": [
                 {
                   "type": "postback",
@@ -573,7 +613,7 @@ const buttonReply =(sender_psid) => {
       }
     }
 
-  
+
   callSend(sender_psid, response);
 }
 
@@ -595,7 +635,7 @@ const thankyouReply =(sender_psid, name, img_url) => {
           "template_type": "generic",
           "elements": [{
             "title": "Thank you! " + name,
-            "image_url":img_url,                       
+            "image_url":img_url,
             "buttons": [
                 {
                   "type": "postback",
@@ -623,16 +663,16 @@ function testDelete(sender_psid){
         "payload": {
           "template_type": "generic",
           "elements": [{
-            "title": "Delete Button Test",                       
-            "buttons": [              
+            "title": "Delete Button Test",
+            "buttons": [
               {
                 "type": "web_url",
                 "title": "enter",
                 "url":APP_URL+"test/",
                  "webview_height_ratio": "full",
-                "messenger_extensions": true,          
+                "messenger_extensions": true,
               },
-              
+
             ],
           }]
         }
@@ -644,7 +684,7 @@ function testDelete(sender_psid){
 /*const defaultReply = (sender_psid) => {
   let response1 = {"text": "To test text reply, type 'text'"};
   let response2 = {"text": "To test quick reply, type 'quick'"};
-  let response3 = {"text": "To test button reply, type 'button'"};   
+  let response3 = {"text": "To test button reply, type 'button'"};
   let response4 = {"text": "To test webview, type 'webview'"};
     callSend(sender_psid, response1).then(()=>{
       return callSend(sender_psid, response2).then(()=>{
@@ -652,7 +692,7 @@ function testDelete(sender_psid){
           return callSend(sender_psid, response4);
         });
       });
-  });  
+  });
 }*/
 
 const defaultReply = (sender_psid) => {
@@ -663,11 +703,11 @@ let response = {
           "template_type": "generic",
           "elements": [{
             "title": "What you want to do?",
-            "image_url":"https://www.freelogodesign.org/download/file?id=011b9196-8df9-423e-91fd-c9c61293650d_200x200.png",                       
+            "image_url":"https://www.freelogodesign.org/download/file?id=011b9196-8df9-423e-91fd-c9c61293650d_200x200.png",
             "buttons": [
                 {
                   "type": "postback",
-                  "title": "Seek Promotions",
+                  "title": "Search Promotions",
                   "payload": "yes",
                 },
                 {
@@ -684,14 +724,14 @@ let response = {
 }
 
 
-const callSendAPI = (sender_psid, response) => {   
+const callSendAPI = (sender_psid, response) => {
   let request_body = {
     "recipient": {
       "id": sender_psid
     },
     "message": response
   }
-  
+
   return new Promise(resolve => {
     request({
       "uri": "https://graph.facebook.com/v6.0/me/messages",
@@ -706,7 +746,7 @@ const callSendAPI = (sender_psid, response) => {
       } else {
         console.error("Unable to send message:" + err);
       }
-    }); 
+    });
   });
 }
 
@@ -768,14 +808,14 @@ const setupGetStartedButton = (res) => {
       form: messageData
     },
     function (error, response, body) {
-      if (!error && response.statusCode == 200) {        
+      if (!error && response.statusCode == 200) {
         res.send(body);
-      } else { 
+      } else {
         // TODO: Handle errors
         res.send(body);
       }
   });
-} 
+}
 
 /**********************************
 FUNCTION TO SET UP PERSISTENT MENU
@@ -784,7 +824,7 @@ FUNCTION TO SET UP PERSISTENT MENU
 
 
 const setupPersistentMenu = (res) => {
-  var messageData = { 
+  var messageData = {
       "persistent_menu":[
           {
             "locale":"default",
@@ -811,9 +851,9 @@ const setupPersistentMenu = (res) => {
         "locale":"default",
         "composer_input_disabled":false
       }
-    ]          
+    ]
   };
-        
+
   request({
       url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ PAGE_ACCESS_TOKEN,
       method: 'POST',
@@ -823,11 +863,11 @@ const setupPersistentMenu = (res) => {
   function (error, response, body) {
       if (!error && response.statusCode == 200) {
           res.send(body);
-      } else { 
+      } else {
           res.send(body);
       }
   });
-} 
+}
 
 /***********************
 FUNCTION TO REMOVE MENU
@@ -837,9 +877,9 @@ const removePersistentMenu = (res) => {
   var messageData = {
           "fields": [
              "persistent_menu" ,
-             "get_started"                 
-          ]               
-  };  
+             "get_started"
+          ]
+  };
   request({
       url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ PAGE_ACCESS_TOKEN,
       method: 'DELETE',
@@ -847,13 +887,13 @@ const removePersistentMenu = (res) => {
       form: messageData
   },
   function (error, response, body) {
-      if (!error && response.statusCode == 200) {          
+      if (!error && response.statusCode == 200) {
           res.send(body);
-      } else {           
+      } else {
           res.send(body);
       }
   });
-} 
+}
 
 
 /***********************************
@@ -863,10 +903,10 @@ FUNCTION TO ADD WHITELIST DOMAIN
 const whitelistDomains = (res) => {
   var messageData = {
           "whitelisted_domains": [
-             APP_URL , 
-             "https://herokuapp.com" ,                                   
-          ]               
-  };  
+             APP_URL ,
+             "https://herokuapp.com" ,
+          ]
+  };
   request({
       url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ PAGE_ACCESS_TOKEN,
       method: 'POST',
@@ -874,10 +914,10 @@ const whitelistDomains = (res) => {
       form: messageData
   },
   function (error, response, body) {
-      if (!error && response.statusCode == 200) {          
+      if (!error && response.statusCode == 200) {
           res.send(body);
-      } else {           
+      } else {
           res.send(body);
       }
   });
-} 
+}
