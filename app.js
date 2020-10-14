@@ -676,7 +676,8 @@ let response = {
           }]
         }
       }
-    }
+    };
+    callSend(sender_psid, response);
 }
 
 
