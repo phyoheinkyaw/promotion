@@ -499,7 +499,7 @@ function webviewTest(sender_psid){
 
 
 const hiReply =(sender_psid) => {
-  let response = {"text": "Hello "+{{user_full_name}}+"! You can search or submit promotion by typing 'promotion' in message."};
+  let response = {"text": "Hello! You can search or submit promotion by typing 'promotion' in message."};
   callSend(sender_psid, response);
 }
 
@@ -638,7 +638,7 @@ function testDelete(sender_psid){
   callSendAPI(sender_psid, response);
 }
 
-const defaultReply = (sender_psid) => {
+/*const defaultReply = (sender_psid) => {
   let response1 = {"text": "To test text reply, type 'text'"};
   let response2 = {"text": "To test quick reply, type 'quick'"};
   let response3 = {"text": "To test button reply, type 'button'"};   
@@ -650,7 +650,35 @@ const defaultReply = (sender_psid) => {
         });
       });
   });  
+}*/
+
+const defaultReply = (sender_psid) => {
+let response = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": "What you want to do?",
+            "image_url":"https://www.freelogodesign.org/download/file?id=011b9196-8df9-423e-91fd-c9c61293650d_200x200.png",                       
+            "buttons": [
+                {
+                  "type": "postback",
+                  "title": "Seek Promotions",
+                  "payload": "yes",
+                },
+                {
+                  "type": "postback",
+                  "title": "Submit Promotions",
+                  "payload": "no",
+                }
+              ],
+          }]
+        }
+      }
+    }
 }
+
 
 const callSendAPI = (sender_psid, response) => {   
   let request_body = {
