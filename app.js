@@ -160,11 +160,11 @@ app.get('/showimages/:sender_id/',function(req,res){
     .then(  function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
             let rdata = {};
-            rdata.about = doc.about;
-            rdata.category = doc.category;
-            rdata.image = doc.image;
-            rdata.shopaddress = doc.shopaddress;
-            rdata.shopname = doc.shopname;
+            rdata.about = doc.data().about;
+            rdata.category = doc.data().category;
+            rdata.image = doc.data().image;
+            rdata.shopaddress = doc.data().shopaddress;
+            rdata.shopname = doc.data().shopname;
 
             data.push(rdata);
 
