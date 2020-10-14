@@ -453,8 +453,11 @@ const handlePostback = (sender_psid, received_postback) => {
       case "yes":
           showButtonReplyYes(sender_psid);
         break;
-      case "submitPromo":
-          submitPromoWebView(sender_psid);
+      case "searchPromo":
+          searchPromo(sender_psid);
+        break;
+      case "mobilePhone":
+          mobilePhone(sender_psid);
         break;
       case "no":
           showButtonReplyNo(sender_psid);
@@ -541,24 +544,10 @@ function webviewTest(sender_psid){
   callSendAPI(sender_psid, response);
 }
 
-function submitPromoWebView(sender_psid){
-  let response;
-  response = {
-                "type": "web_url",
-                "title": "webview",
-                "url":APP_URL+"webview/"+sender_psid,
-                 "webview_height_ratio": "full",
-                "messenger_extensions": true,
-              },
-
-
-  callSendAPI(sender_psid, response);
-}
-
 
 
 const hiReply =(sender_psid) => {
-  let response = {"text": "Hello! You can search or submit promotion by typing 'promotion' in message."};
+  let response = {"text": "Hello" ${{user_full_name}}"! You can search or submit promotion by typing 'promotion' in message."};
   callSend(sender_psid, response);
 }
 
@@ -591,6 +580,71 @@ const quickReply =(sender_psid) => {
   };
   callSend(sender_psid, response);
 }
+
+const searchPromo =(sender_psid) => {
+  let response = {
+    "text": "Choose A Category",
+    "quick_replies":[
+            {
+              "content_type":"text",
+              "title":"Mobile Phone",
+              "payload":"mobilePhone",
+            },{
+              "content_type":"text",
+              "title":"Computer",
+              "payload":"computer",
+            },{
+              "content_type":"text",
+              "title":"Electronic",
+              "payload":"electronic",
+            },{
+              "content_type":"text",
+              "title":"Salon",
+              "payload":"salon",
+            },{
+              "content_type":"text",
+              "title":"Cosmetic",
+              "payload":"cosmetic",
+            },{
+              "content_type":"text",
+              "title":"Restaurant",
+              "payload":"restaurant",
+            },{
+              "content_type":"text",
+              "title":"Mini-Mart",
+              "payload":"miniMart",
+            }
+    ]
+  };
+  callSend(sender_psid, response);
+}
+
+const mobilePhone = (sender_psid) => {
+  const promoDB = db.collection('Promotions');
+    const snapshot = await promoDB.where('category', '==', mobilephone).get();
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+
+    snapshot.forEach(doc => {
+      console.log(doc.id, '=>', doc.data());
+    });
+let response = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": data,
+            "image_url":"https://www.freelogodesign.org/download/file?id=011b9196-8df9-423e-91fd-c9c61293650d_200x200.png",
+          }]
+        }
+      }
+    };
+    callSend(sender_psid, response);
+}
+
 
 const showQuickReplyOn =(sender_psid) => {
   let response = { "text": "You sent quick reply ON" };
@@ -691,7 +745,7 @@ const submitPromoReply =(sender_psid, shopname, img_url) => {
                 {
                   "type": "postback",
                   "title": "Search Promotions",
-                  "payload": "no",
+                  "payload": "searchPromo",
                 }
               ],
           }]
