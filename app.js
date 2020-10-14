@@ -453,6 +453,9 @@ const handlePostback = (sender_psid, received_postback) => {
       case "yes":
           showButtonReplyYes(sender_psid);
         break;
+      case "submitPromo":
+          webviewTest(sender_psid);
+        break;
       case "no":
           showButtonReplyNo(sender_psid);
         break;
@@ -662,13 +665,13 @@ const submitPromoReply =(sender_psid, shopname, img_url) => {
         "payload": {
           "template_type": "generic",
           "elements": [{
-            "title": "Thank you! " + shopname,
+            "title": "Thank you for submit your promotion " + shopname,
             "image_url":img_url,
             "buttons": [
                 {
                   "type": "postback",
-                  "title": "Submit Another Promotion",
-                  "payload": "yes",
+                  "title": "Submit Another",
+                  "payload": "submitPromo",
                 },
                 {
                   "type": "postback",
@@ -741,7 +744,7 @@ let response = {
                 {
                   "type": "postback",
                   "title": "Submit Promotions",
-                  "payload": "no",
+                  "payload": "submitPromo",
                 }
               ],
           }]
