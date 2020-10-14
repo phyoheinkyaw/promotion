@@ -454,7 +454,7 @@ const handlePostback = (sender_psid, received_postback) => {
           showButtonReplyYes(sender_psid);
         break;
       case "submitPromo":
-          webviewTest(sender_psid);
+          submitPromoWebView(sender_psid);
         break;
       case "no":
           showButtonReplyNo(sender_psid);
@@ -541,6 +541,19 @@ function webviewTest(sender_psid){
   callSendAPI(sender_psid, response);
 }
 
+function submitPromoWebView(sender_psid){
+  let response;
+  response = {
+                "type": "web_url",
+                "title": "webview",
+                "url":APP_URL+"webview/"+sender_psid,
+                 "webview_height_ratio": "full",
+                "messenger_extensions": true,
+              },
+
+            
+  callSendAPI(sender_psid, response);
+}
 
 
 
