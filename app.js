@@ -125,7 +125,7 @@ app.post('/test',function(req,res){
 /*********************************************
 Gallery page
 **********************************************/
-app.get('/showimages/:sender_id/',function(req,res){
+/*app.get('/showimages/:sender_id/',function(req,res){
     const sender_id = req.params.sender_id;
 
     let data = [];
@@ -149,7 +149,7 @@ app.get('/showimages/:sender_id/',function(req,res){
     .catch(function(error) {
         console.log("Error getting documents: ", error);
     });
-});
+});*/
 
 app.get('/showimages/:sender_id/',function(req,res){
     const sender_id = req.params.sender_id;
@@ -159,11 +159,14 @@ app.get('/showimages/:sender_id/',function(req,res){
     db.collection("Promotions").where("category", "==", mobilephone).limit(20).get()
     .then(  function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
-            let img = {};
-            img.id = doc.id;
-            img.url = doc.data().url;
+            let rdata = {};
+            rdata.about = doc.about;
+            rdata.category = doc.category;
+            rdata.image = doc.image;
+            rdata.shopaddress = doc.shopaddress;
+            rdata.shopname = doc.shopname;
 
-            data.push(img);
+            data.push(rdata);
 
         });
         console.log("DATA", data);
