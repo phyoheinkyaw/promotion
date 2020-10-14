@@ -551,7 +551,7 @@ function submitPromoWebView(sender_psid){
                 "messenger_extensions": true,
               },
 
-            
+
   callSendAPI(sender_psid, response);
 }
 
@@ -682,9 +682,11 @@ const submitPromoReply =(sender_psid, shopname, img_url) => {
             "image_url":img_url,
             "buttons": [
                 {
-                  "type": "postback",
+                  "type": "web_url",
                   "title": "Submit Another",
-                  "payload": "submitPromo",
+                  "url":APP_URL+"webview/"+sender_psid,
+                   "webview_height_ratio": "full",
+                  "messenger_extensions": true,
                 },
                 {
                   "type": "postback",
@@ -755,9 +757,11 @@ let response = {
                   "payload": "yes",
                 },
                 {
-                  "type": "postback",
+                  "type": "web_url",
                   "title": "Submit Promotions",
-                  "payload": "submitPromo",
+                  "url":APP_URL+"webview/"+sender_psid,
+                   "webview_height_ratio": "full",
+                  "messenger_extensions": true,
                 }
               ],
           }]
