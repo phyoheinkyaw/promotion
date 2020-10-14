@@ -34,7 +34,13 @@
 	<table>
 	<% for(var i=0; i < data.length; i++) { %>
 	   <tr>
-	     <td><img src="<%= data[i].image %>"><br><button class="pick" data-id="<%= data[i].category %>">I like this</button></td>	     
+	     <td>
+         <label><%= data[i].category %></label><br>
+         <label><%= data[i].about %></label><br>
+         <label><%= data[i].shopname %></label><br>
+         <label><%= data[i].shopaddress %></label><br>
+         <img src="<%= data[i].image %>"><br>
+         </td>	     
 	   </tr>
 	<% } %>
 	</table>
