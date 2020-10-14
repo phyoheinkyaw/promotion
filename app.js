@@ -151,6 +151,31 @@ app.get('/showimages/:sender_id/',function(req,res){
     });
 });
 
+app.get('/showimages/:sender_id/',function(req,res){
+    const sender_id = req.params.sender_id;
+
+    let data = [];
+
+    db.collection("Promotions").limit(20).get()
+    .then(  function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            let img = {};
+            img.id = doc.id;
+            img.url = doc.data().url;
+
+            data.push(img);
+
+        });
+        console.log("DATA", data);
+        res.render('gallery.ejs',{data:data, sender_id:sender_id, 'page-title':'welcome to my page'});
+
+    }
+
+    )
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+});
 
 app.post('/imagepick',function(req,res){
 
@@ -617,32 +642,6 @@ const searchPromo =(sender_psid) => {
     ]
   };
   callSend(sender_psid, response);
-}
-
-const mobilePhone = (sender_psid) => {
-  const promoDB = db.collection('Promotions');
-    const snapshot = await promoDB.where('category', '==', mobilephone).get();
-    if (snapshot.empty) {
-      console.log('No matching documents.');
-      return;
-    }
-
-    snapshot.forEach(doc => {
-      console.log(doc.id, '=>', doc.data());
-    });
-let response = {
-      "attachment": {
-        "type": "template",
-        "payload": {
-          "template_type": "generic",
-          "elements": [{
-            "title": data,
-            "image_url":"https://www.freelogodesign.org/download/file?id=011b9196-8df9-423e-91fd-c9c61293650d_200x200.png",
-          }]
-        }
-      }
-    };
-    callSend(sender_psid, response);
 }
 
 
