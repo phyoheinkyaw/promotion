@@ -335,7 +335,7 @@ const handleMessage = (sender_psid, received_message) => {
       user_message = user_message.toLowerCase(); 
 
       switch(user_message) { 
-      case "hi""hello":
+      case ("hi""hello"):
           hiReply(sender_psid);
         break;
       case "mingalarbar":
