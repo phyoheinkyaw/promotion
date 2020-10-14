@@ -446,7 +446,7 @@ const showImages = (sender_psid) => {
               {
                 "type": "web_url",
                 "title": "enter",
-                "url":"https://fbstarter.herokuapp.com/showimages/"+sender_psid,
+                "url":APP_URL+"showimages/"+sender_psid,
                  "webview_height_ratio": "full",
                 "messenger_extensions": true,          
               },
@@ -625,7 +625,7 @@ function testDelete(sender_psid){
               {
                 "type": "web_url",
                 "title": "enter",
-                "url":"https://fbstarter.herokuapp.com/test/",
+                "url":APP_URL+"test/",
                  "webview_height_ratio": "full",
                 "messenger_extensions": true,          
               },
