@@ -547,7 +547,7 @@ function webviewTest(sender_psid){
 
 
 const hiReply =(sender_psid) => {
-  let response = {"text": "Hello" ${{user_full_name}}"! You can search or submit promotion by typing 'promotion' in message."};
+  let response = {"text": "Hello! You can search or submit promotion by typing 'promotion' in message."};
   callSend(sender_psid, response);
 }
 
