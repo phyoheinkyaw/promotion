@@ -821,7 +821,7 @@ let response = {
                 {
                   "type": "postback",
                   "title": "Search Promotions",
-                  "payload": "yes",
+                  "payload": "searchPromo",
                 },
                 {
                   "type": "web_url",
