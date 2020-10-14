@@ -16,34 +16,34 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
-    const APP_ID = 544769076153407;    
+    const APP_ID = 544769076153407;
     let senderID = "";
 
-    
+
     window.extAsyncInit = function() {
-        MessengerExtensions.getContext(APP_ID, 
+        MessengerExtensions.getContext(APP_ID,
           function success(thread_context){
            senderID = thread_context.psid;
           },
           function error(err){
             console.log(err);
           }
-        );        
+        );
     };
   </script>
-  
-	
+
+
   <button id="btn-del">Delete</button>
 
-	
+
   <script>
 
 
   	  const send = () => {
       	let xhr;
-      	if (window.XMLHttpRequest) {   
+      	if (window.XMLHttpRequest) {
     		xhr = new XMLHttpRequest();
- 		} else {    	
+ 		} else {
     		xhr = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 
@@ -52,30 +52,30 @@
 		}
 
 
-		const url = "https://fbstarter.herokuapp.com/test/";		
-         
+		const url = "https://promotionchatbot.herokuapp.com/test/";		
+
         xhr.open("POST", url , true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data)); 
-      } 
-      
-   
+        xhr.send(JSON.stringify(data));
+      }
+
+
       const windowShut = () => {
         MessengerExtensions.requestCloseBrowser(function success() {
-          console.log("success");   
-          send();       
+          console.log("success");
+          send();
         }, function error(err) {
           console.log(err);
         });
       }
 
-      
-      document.getElementById("btn-del").addEventListener("click", windowShut);       
 
-     
-      
+      document.getElementById("btn-del").addEventListener("click", windowShut);
 
-     
+
+
+
+
 
   </script>
 

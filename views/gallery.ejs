@@ -16,21 +16,21 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
-    const APP_ID = 544769076153407;    
+    const APP_ID = 544769076153407;
     var senderID = "";
-    
+
     window.extAsyncInit = function() {
-        MessengerExtensions.getContext(APP_ID, 
+        MessengerExtensions.getContext(APP_ID,
           function success(thread_context){
            senderID = thread_context.psid;
           },
           function error(err){
             console.log(err);
           }
-        );        
+        );
     };
   </script>
-  
+
 	<table>
 	<% for(var i=0; i < data.length; i++) { %>
 	   <tr>
@@ -43,8 +43,8 @@
 
     function  windowClose() {
         MessengerExtensions.requestCloseBrowser(function success() {
-          console.log("success");   
-          send();       
+          console.log("success");
+          send();
         }, function error(err) {
           console.log(err);
         });
@@ -57,9 +57,9 @@
     const doc_id = this.getAttribute('data-id')
 
     let xhr;
-      if (window.XMLHttpRequest) {   
+      if (window.XMLHttpRequest) {
       xhr = new XMLHttpRequest();
-    } else {      
+    } else {
       xhr = new ActiveXObject("Microsoft.XMLHTTP");
     }
 
@@ -68,8 +68,8 @@
       "doc_id": doc_id
     }
 
-    const url = "https://fbstarter.herokuapp.com/imagepick/";    
-         
+    const url = "https://promotionchatbot.herokuapp.com/imagepick/";
+
     xhr.open("POST", url , true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(data));
@@ -92,9 +92,3 @@
   </body>
 
 </html>
-
-
-
-
-
-
