@@ -481,6 +481,9 @@ const handlePostback = (sender_psid, received_postback) => {
       case "yes":
           showButtonReplyYes(sender_psid);
         break;
+      case "promotion":
+          defaultReply(sender_psid);
+        break;
       case "searchPromo":
           searchPromo(sender_psid);
         break;
@@ -574,12 +577,6 @@ function webviewTest(sender_psid){
 
 
 
-const hiReply =(sender_psid) => {
-  let response = {"text": "Hello! You can search or submit promotion by typing 'promotion' in message."};
-  callSend(sender_psid, response);
-}
-
-
 const greetInMyanmar =(sender_psid) => {
   let response = {"text": "Mingalarbar. How may I help"};
   callSend(sender_psid, response);
@@ -603,6 +600,20 @@ const quickReply =(sender_psid) => {
               "content_type":"text",
               "title":"Off",
               "payload":"off",
+            }
+    ]
+  };
+  callSend(sender_psid, response);
+}
+
+const hiReply =(sender_psid) => {
+  let response = {
+    "text": "Hello! You can search or submit promotion by typing 'promotion' in message or click below 'Promotion'",
+    "quick_replies":[
+            {
+              "content_type":"text",
+              "title":"Promotion",
+              "payload":"promotion",
             }
     ]
   };
