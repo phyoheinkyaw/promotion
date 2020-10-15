@@ -156,7 +156,7 @@ app.get('/showimages/:sender_id/',function(req,res){
 
     let data = [];
 
-    db.collection("Promotions").limit(20).get()
+    db.collection("Promotions").where("category", "==", "mobilephone").limit(20).get()
     .then(  function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
             let rdata = {};
@@ -625,9 +625,11 @@ const searchPromo =(sender_psid) => {
     "text": "Choose A Category",
     "quick_replies":[
             {
-              "content_type":"text",
+              "content_type":"web_url",
               "title":"Mobile Phone",
-              "payload":"mobilePhone",
+              "url":APP_URL+"showimages/"+sender_psid,
+               "webview_height_ratio": "full",
+              "messenger_extensions": true,
             },{
               "content_type":"text",
               "title":"Computer",
