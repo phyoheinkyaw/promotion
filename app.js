@@ -149,14 +149,14 @@ Gallery page
     .catch(function(error) {
         console.log("Error getting documents: ", error);
     });
-});*/
+});.where("category", "==", "mobilephone")*/
 
 app.get('/showimages/:sender_id/',function(req,res){
     const sender_id = req.params.sender_id;
 
     let data = [];
 
-    db.collection("Promotions").where("category", "==", "mobilephone").limit(20).get()
+    db.collection("Promotions").limit(20).get()
     .then(  function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
             let rdata = {};
