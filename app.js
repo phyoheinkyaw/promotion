@@ -151,6 +151,34 @@ Gallery page
     });
 });.where("category", "==", "mobilephone")*/
 
+app.get('/admin',function(req,res){
+
+    let data = [];
+
+    db.collection("Promotions").get()
+    .then(  function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            let rdata = {};
+            rdata.about = doc.data().about;
+            rdata.category = doc.data().category;
+            rdata.image = doc.data().image;
+            rdata.shopaddress = doc.data().shopaddress;
+            rdata.shopname = doc.data().shopname;
+
+            data.push(rdata);
+
+        });
+        console.log("DATA", data);
+        res.render('index.ejs',{data:data, 'page-title':'Confirm Promotion'});
+
+    }
+
+    )
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+});
+
 app.get('/showimages/:sender_id/',function(req,res){
     const sender_id = req.params.sender_id;
 

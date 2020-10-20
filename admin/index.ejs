@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>ddmo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    *{font-family: Arial;}
+    table {border-collapse: collapse;width: 100%;}
+    th, td {text-align: left;padding: 8px;}
+</style>
+ </head>
+
+  <body>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <% for(var i=0; i < data.length; i++) { %>
+      <tr>
+        <th>Shop Name =</th>
+        <th><%= data[i].shopname %></th>
+      </tr>
+      <tr>
+        <td>Category =</td>
+        <td><%= data[i].category %></td>
+      </tr>
+      <tr>
+        <td>Shop Address =</td>
+        <td><%= data[i].shopaddress %></td>
+      </tr>
+      <tr>
+        <td>Promotion Information =</td>
+        <td><%= data[i].about %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><img src="<%= data[i].image %>" style="width: 200px; height: auto;"></td>
+      </tr>
+      <br>
+      <% } %>
+    </table>
+  </div>
+
+  <script>
+
+    function  windowClose() {
+        MessengerExtensions.requestCloseBrowser(function success() {
+          console.log("success");
+          send();
+        }, function error(err) {
+          console.log(err);
+        });
+      }
+
+
+
+    function myFunction () {
+
+    const doc_id = this.getAttribute('data-id')
+
+    let xhr;
+      if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest();
+    } else {
+      xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    const data = {
+      "sender_id":senderID,
+      "doc_id": doc_id
+    }
+
+    const url = "https://promotionchatbot.herokuapp.com/imagepick/";
+
+    xhr.open("POST", url , true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    windowClose();
+
+    }
+
+    let oPick = document.getElementsByClassName("pick");
+
+    for(let i=0;i < oPick.length;i++){
+     oPick[i].addEventListener("click", myFunction);
+    }
+
+
+
+
+  </script>
+
+  </body>
+
+</html>
